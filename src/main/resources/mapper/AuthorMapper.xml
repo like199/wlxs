@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.like.trip.mapper.AuthorMapper" >
+
+    <resultMap id="BaseResultMap" type="com.like.trip.model.Author" >
+        <id column="Id" property="id" jdbcType="INTEGER" />
+        <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+        <result column="followers_count" property="followersCount" jdbcType="INTEGER" />
+        <result column="followings_count" property="followingsCount" jdbcType="INTEGER" />
+    </resultMap>
+
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Update_By_Example_Where_Clause" >
+        <where >
+            <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List" >
+        Id, create_date, name, avatar, followers_count, followings_count
+    </sql>
+
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.like.trip.model.AuthorExample" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from author
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="Base_Column_List" />
+        from author
+        where Id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from author
+        where Id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteByExample" parameterType="com.like.trip.model.AuthorExample" >
+        delete from author
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+
+    <insert id="insert" parameterType="com.like.trip.model.Author" >
+        insert into author (Id, create_date, name, 
+            avatar, followers_count, followings_count
+            )
+        values (#{id,jdbcType=INTEGER}, #{createDate,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+            #{avatar,jdbcType=VARCHAR}, #{followersCount,jdbcType=INTEGER}, #{followingsCount,jdbcType=INTEGER}
+            )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.like.trip.model.Author" >
+        insert into author
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                Id,
+            </if>
+            <if test="createDate != null" >
+                create_date,
+            </if>
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="avatar != null" >
+                avatar,
+            </if>
+            <if test="followersCount != null" >
+                followers_count,
+            </if>
+            <if test="followingsCount != null" >
+                followings_count,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null" >
+                #{createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="avatar != null" >
+                #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="followersCount != null" >
+                #{followersCount,jdbcType=INTEGER},
+            </if>
+            <if test="followingsCount != null" >
+                #{followingsCount,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="countByExample" parameterType="com.like.trip.model.AuthorExample" resultType="java.lang.Integer" >
+        select count(*) from author
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <update id="updateByExampleSelective" parameterType="map" >
+        update author
+        <set >
+            <if test="record.id != null" >
+                Id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.createDate != null" >
+                create_date = #{record.createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.name != null" >
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.avatar != null" >
+                avatar = #{record.avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="record.followersCount != null" >
+                followers_count = #{record.followersCount,jdbcType=INTEGER},
+            </if>
+            <if test="record.followingsCount != null" >
+                followings_count = #{record.followingsCount,jdbcType=INTEGER},
+            </if>
+        </set>
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByExample" parameterType="map" >
+        update author
+        set Id = #{record.id,jdbcType=INTEGER},
+            create_date = #{record.createDate,jdbcType=VARCHAR},
+            name = #{record.name,jdbcType=VARCHAR},
+            avatar = #{record.avatar,jdbcType=VARCHAR},
+            followers_count = #{record.followersCount,jdbcType=INTEGER},
+            followings_count = #{record.followingsCount,jdbcType=INTEGER}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.like.trip.model.Author" >
+        update author
+        <set >
+            <if test="createDate != null" >
+                create_date = #{createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="avatar != null" >
+                avatar = #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="followersCount != null" >
+                followers_count = #{followersCount,jdbcType=INTEGER},
+            </if>
+            <if test="followingsCount != null" >
+                followings_count = #{followingsCount,jdbcType=INTEGER},
+            </if>
+        </set>
+        where Id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.like.trip.model.Author" >
+        update author
+        set create_date = #{createDate,jdbcType=VARCHAR},
+            name = #{name,jdbcType=VARCHAR},
+            avatar = #{avatar,jdbcType=VARCHAR},
+            followers_count = #{followersCount,jdbcType=INTEGER},
+            followings_count = #{followingsCount,jdbcType=INTEGER}
+        where Id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

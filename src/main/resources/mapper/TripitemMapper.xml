@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.like.trip.mapper.TripitemMapper" >
+
+
+    
+    <resultMap id="BaseResultMap" type="com.like.trip.model.Tripitem" >
+        <id column="Id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="cover_image_w640" property="coverImageW640" jdbcType="VARCHAR" />
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+        <result column="day_count" property="dayCount" jdbcType="INTEGER" />
+        <result column="view_count" property="viewCount" jdbcType="VARCHAR" />
+        <result column="popular_place_str" property="popularPlaceStr" jdbcType="VARCHAR" />
+        <result column="waypoints" property="waypoints" jdbcType="VARCHAR" />
+        <result column="recommendations" property="recommendations" jdbcType="VARCHAR" />   
+        <association property="author"  column="create_user"  select="getAuthorSel" ></association>
+     </resultMap> 
+  
+
+
+	  <resultMap id="AuthorResultMap" type="com.like.trip.model.Author" >
+        <id column="Id" property="id" jdbcType="INTEGER" />
+        <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+        <result column="followers_count" property="followersCount" jdbcType="INTEGER" />
+        <result column="followings_count" property="followingsCount" jdbcType="INTEGER" />
+    </resultMap>
+    
+     <select id="getAuthorSel" resultMap="AuthorResultMap" parameterType="java.lang.Integer" >
+       select  Id, create_date, name, avatar, followers_count, followings_count from author 
+        where Id = #{create_user,jdbcType=INTEGER}
+    </select>
+    
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Update_By_Example_Where_Clause" >
+        <where >
+            <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List" >
+        Id, name, cover_image_w640, create_date, day_count, view_count, popular_place_str, 
+        create_user, waypoints, recommendations
+    </sql>
+
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.like.trip.model.TripitemExample" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from tripitem
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+    
+   
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="Base_Column_List" />
+        from tripitem
+        where Id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from tripitem
+        where Id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteByExample" parameterType="com.like.trip.model.TripitemExample" >
+        delete from tripitem
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+
+    <insert id="insert" parameterType="com.like.trip.model.Tripitem" >
+        insert into tripitem (Id, name, cover_image_w640, 
+            create_date, day_count, view_count, 
+            popular_place_str, create_user, waypoints, 
+            recommendations)
+        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{coverImageW640,jdbcType=VARCHAR}, 
+            #{createDate,jdbcType=TIMESTAMP}, #{dayCount,jdbcType=INTEGER}, #{viewCount,jdbcType=VARCHAR}, 
+            #{popularPlaceStr,jdbcType=VARCHAR}, #{createUser,jdbcType=INTEGER}, #{waypoints,jdbcType=VARCHAR}, 
+            #{recommendations,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.like.trip.model.Tripitem" >
+        insert into tripitem
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                Id,
+            </if>
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="coverImageW640 != null" >
+                cover_image_w640,
+            </if>
+            <if test="createDate != null" >
+                create_date,
+            </if>
+            <if test="dayCount != null" >
+                day_count,
+            </if>
+            <if test="viewCount != null" >
+                view_count,
+            </if>
+            <if test="popularPlaceStr != null" >
+                popular_place_str,
+            </if>
+            <if test="createUser != null" >
+                create_user,
+            </if>
+            <if test="waypoints != null" >
+                waypoints,
+            </if>
+            <if test="recommendations != null" >
+                recommendations,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="coverImageW640 != null" >
+                #{coverImageW640,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null" >
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dayCount != null" >
+                #{dayCount,jdbcType=INTEGER},
+            </if>
+            <if test="viewCount != null" >
+                #{viewCount,jdbcType=VARCHAR},
+            </if>
+            <if test="popularPlaceStr != null" >
+                #{popularPlaceStr,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null" >
+                #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="waypoints != null" >
+                #{waypoints,jdbcType=VARCHAR},
+            </if>
+            <if test="recommendations != null" >
+                #{recommendations,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="countByExample" parameterType="com.like.trip.model.TripitemExample" resultType="java.lang.Integer" >
+        select count(*) from tripitem
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <update id="updateByExampleSelective" parameterType="map" >
+        update tripitem
+        <set >
+            <if test="record.id != null" >
+                Id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.name != null" >
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.coverImageW640 != null" >
+                cover_image_w640 = #{record.coverImageW640,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createDate != null" >
+                create_date = #{record.createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.dayCount != null" >
+                day_count = #{record.dayCount,jdbcType=INTEGER},
+            </if>
+            <if test="record.viewCount != null" >
+                view_count = #{record.viewCount,jdbcType=VARCHAR},
+            </if>
+            <if test="record.popularPlaceStr != null" >
+                popular_place_str = #{record.popularPlaceStr,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createUser != null" >
+                create_user = #{record.createUser,jdbcType=INTEGER},
+            </if>
+            <if test="record.waypoints != null" >
+                waypoints = #{record.waypoints,jdbcType=VARCHAR},
+            </if>
+            <if test="record.recommendations != null" >
+                recommendations = #{record.recommendations,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByExample" parameterType="map" >
+        update tripitem
+        set Id = #{record.id,jdbcType=INTEGER},
+            name = #{record.name,jdbcType=VARCHAR},
+            cover_image_w640 = #{record.coverImageW640,jdbcType=VARCHAR},
+            create_date = #{record.createDate,jdbcType=TIMESTAMP},
+            day_count = #{record.dayCount,jdbcType=INTEGER},
+            view_count = #{record.viewCount,jdbcType=VARCHAR},
+            popular_place_str = #{record.popularPlaceStr,jdbcType=VARCHAR},
+            create_user = #{record.createUser,jdbcType=INTEGER},
+            waypoints = #{record.waypoints,jdbcType=VARCHAR},
+            recommendations = #{record.recommendations,jdbcType=VARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.like.trip.model.Tripitem" >
+        update tripitem
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="coverImageW640 != null" >
+                cover_image_w640 = #{coverImageW640,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null" >
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dayCount != null" >
+                day_count = #{dayCount,jdbcType=INTEGER},
+            </if>
+            <if test="viewCount != null" >
+                view_count = #{viewCount,jdbcType=VARCHAR},
+            </if>
+            <if test="popularPlaceStr != null" >
+                popular_place_str = #{popularPlaceStr,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null" >
+                create_user = #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="waypoints != null" >
+                waypoints = #{waypoints,jdbcType=VARCHAR},
+            </if>
+            <if test="recommendations != null" >
+                recommendations = #{recommendations,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where Id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.like.trip.model.Tripitem" >
+        update tripitem
+        set name = #{name,jdbcType=VARCHAR},
+            cover_image_w640 = #{coverImageW640,jdbcType=VARCHAR},
+            create_date = #{createDate,jdbcType=TIMESTAMP},
+            day_count = #{dayCount,jdbcType=INTEGER},
+            view_count = #{viewCount,jdbcType=VARCHAR},
+            popular_place_str = #{popularPlaceStr,jdbcType=VARCHAR},
+            create_user = #{createUser,jdbcType=INTEGER},
+            waypoints = #{waypoints,jdbcType=VARCHAR},
+            recommendations = #{recommendations,jdbcType=VARCHAR}
+        where Id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>
